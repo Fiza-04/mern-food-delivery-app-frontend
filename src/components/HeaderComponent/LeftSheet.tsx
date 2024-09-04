@@ -46,8 +46,8 @@ const LeftSheet = () => {
       <SheetContent className="w-[300px]" side="left">
         <SheetHeader></SheetHeader>
         <SheetDescription className="flex flex-col mt-5">
-          <div className="flex flex-col space-y-5">
-            <Link to="/user-profile" className="flex flex-row space-x-5">
+          <Link to="/user-profile" className="flex flex-col space-y-5">
+            <div className="flex flex-row space-x-5">
               <UserRound
                 className="text-slate-400 bg-slate-200 p-2 rounded-full"
                 size={50}
@@ -60,14 +60,14 @@ const LeftSheet = () => {
                   {user?.email}
                 </span>
               </div>
-            </Link>
+            </div>
             <Link
               to="/"
               className="text-green-700 hover:text-green-500 text-[14px] tracking-wide font-normal"
             >
               Manage your Account
             </Link>
-          </div>
+          </Link>
           <Separator className="bg-green-200 mt-5" />
 
           <div className="flex flex-col space-y-7 mt-10 text-black text-[19px]">
