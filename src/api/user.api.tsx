@@ -82,12 +82,12 @@ export const useCreateMyUser = () => {
 // update user api endpoint
 type updateUserRequestType = {
   name: string;
-  email: string;
   addressLine1: string;
-  addressLine2: string;
-  postcode: string;
   city: string;
   country: string;
+  postcode: string;
+  email?: string;
+  addressLine2?: string;
 };
 
 export const useUpdateUser = () => {
@@ -119,13 +119,13 @@ export const useUpdateUser = () => {
     },
     onError: (error) => {
       toast.error(`Your data failed to update due to ${error.toString()}`);
-      mutation.reset();
     },
   });
 
   return {
     updateUser: mutation.mutateAsync,
     isLoading: mutation.isPending,
+    reset: mutation.reset,
   };
 };
 
