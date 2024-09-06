@@ -1,5 +1,6 @@
 import {
   Heart,
+  Home,
   Menu,
   ReceiptText,
   ShoppingCart,
@@ -21,6 +22,11 @@ const LeftSheet = () => {
   const { user, logout } = useAuth0();
 
   const btnData = [
+    {
+      title: "Home",
+      icon: <Home size={20} className="mt-[1px]" />,
+      link: "/",
+    },
     {
       title: "Orders",
       icon: <ReceiptText size={20} className="mt-[1px]" />,
@@ -61,21 +67,18 @@ const LeftSheet = () => {
                 </span>
               </div>
             </div>
-            <Link
-              to="/"
-              className="text-green-700 hover:text-green-500 text-[14px] tracking-wide font-normal"
-            >
+            <div className="text-green-700 hover:text-green-500 text-[14px] tracking-wide font-normal">
               Manage your Account
-            </Link>
+            </div>
           </Link>
           <Separator className="bg-green-200 mt-5" />
 
           <div className="flex flex-col space-y-7 mt-10 text-black text-[19px]">
             {btnData.map((item) => (
-              <div className="flex flex-row space-x-5">
+              <Link to={item.link} className="flex flex-row space-x-5">
                 {item.icon}
-                <Link to={item.link}>{item.title}</Link>
-              </div>
+                <div>{item.title}</div>
+              </Link>
             ))}
           </div>
           <div className="flex flex-col space-y-6 mt-6 text-black text-[16px] font-medium">
