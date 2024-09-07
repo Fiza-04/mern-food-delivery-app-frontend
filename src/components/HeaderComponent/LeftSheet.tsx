@@ -83,7 +83,7 @@ const LeftSheet = () => {
           </div>
           <div className="flex flex-col space-y-6 mt-6 text-black text-[16px] font-medium">
             <Separator className="bg-green-200 mt-7 mb-5" />
-            <Link to="/">Create a business account</Link>
+            <Link to="/manage-restaurant">Create a business account</Link>
             <Link to="/">Add your business</Link>
             <Link to="/">Sign up to deliver</Link>
           </div>

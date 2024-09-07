@@ -2,6 +2,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form } from "../../components/ui/form";
+import DetailsSection from "./DetailsSection";
+import { Separator } from "../../components/ui/separator";
+import CuisinesSection from "./CuisinesSection";
+import MenuSection from "./MenuSection";
+import ImageSection from "./ImageSection";
+import LoadingBtn from "../../components/LoadingBtn";
+import { Button } from "../../components/ui/button";
 
 const formSchema = z.object({
   restaurantName: z.string({
@@ -74,11 +81,24 @@ const RestaurantForm = ({ onSave, isLoading }: Props) => {
 
   const onSubmit = (formDataJson: restaurantFormData) => {
     console.log(formDataJson);
+    // convert json data to form data (object)
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}></form>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-5 bg-slate-50 p-5 rounded-[10px]"
+      >
+        <DetailsSection />
+        <Separator />
+        <CuisinesSection />
+        <Separator />
+        <MenuSection />
+        <Separator />
+        <ImageSection />
+        {isLoading ? <LoadingBtn /> : <Button type="submit">Submit</Button>}
+      </form>
     </Form>
   );
 };
