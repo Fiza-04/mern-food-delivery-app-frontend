@@ -11,7 +11,7 @@ import { Input } from "../../components/ui/input";
 const ImageSection = () => {
   const { control } = useFormContext();
   return (
-    <div className="space-y-2">
+    <div className="space-y-7 pb-3">
       <div>
         <h2 className="text-2xl font-bold">Image</h2>
         <FormDescription>

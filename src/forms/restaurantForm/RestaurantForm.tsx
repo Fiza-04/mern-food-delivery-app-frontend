@@ -31,27 +31,27 @@ const formSchema = z.object({
   cuisines: z.array(z.string()).nonempty({
     message: "Please select atleast one item",
   }),
-  menu: z.array(
+  // menu: z.array(
+  //   z.object({
+  //     categoryName: z.string().min(1, "Category name is required"),
+  //     categoryStatus: z.boolean(),
+  menuItems: z.array(
     z.object({
-      categoryName: z.string().min(1, "Category name is required"),
-      categoryStatus: z.boolean(),
-      menuItems: z.array(
-        z.object({
-          itemName: z.string().min(1, "Item name is required"),
-          itemDescription: z.string().min(8, "Add a description"),
-          itemPrice: z.coerce.number().min(1, "Item name is required"),
-          menuItemImageFile: z.instanceof(File, {
-            message: "Image is required",
-          }),
-        })
-      ),
+      itemName: z.string().min(1, "Item name is required"),
+      itemDescription: z.string().min(8, "Add a description"),
+      itemPrice: z.coerce.number().min(1, "Item name is required"),
+      menuItemImageFile: z.instanceof(File, {
+        message: "Image is required",
+      }),
     })
+    //   ),
+    // })
   ),
   imageFile: z.instanceof(File, { message: "Image is required" }),
   isAcceptingOrders: z.boolean(),
 });
 
-type restaurantFormData = z.infer<typeof formSchema>;
+type RestaurantFormData = z.infer<typeof formSchema>;
 
 type Props = {
   onSave: (restaurantFormData: FormData) => void;
@@ -59,29 +59,75 @@ type Props = {
 };
 
 const RestaurantForm = ({ onSave, isLoading }: Props) => {
-  const form = useForm<restaurantFormData>({
+  const form = useForm<RestaurantFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       cuisines: [],
-      menu: [
+      // menu: [
+      //   {
+      //     categoryName: "",
+      //     categoryStatus: true,
+      menuItems: [
         {
-          categoryName: "",
-          categoryStatus: true,
-          menuItems: [
-            {
-              itemName: "",
-              itemDescription: "",
-              itemPrice: 0,
-            },
-          ],
+          itemName: "",
+          itemDescription: "",
+          itemPrice: 0,
+          menuItemImageFile: undefined,
         },
       ],
+      imageFile: undefined,
+      isAcceptingOrders: true,
+      // },
+      // ],
     },
   });
 
-  const onSubmit = (formDataJson: restaurantFormData) => {
-    console.log(formDataJson);
-    // convert json data to form data (object)
+  const onSubmit = (formDataJson: RestaurantFormData) => {
+    try {
+      console.log("onsubmitting form data: ", formDataJson);
+      const formData = new FormData();
+
+      formData.append("restaurantName", formDataJson.restaurantName);
+      console.log("restaurantNAme => ", formData);
+      formData.append("restaurantAddress", formDataJson.restaurantAddress);
+      formData.append("restaurantPinCode", formDataJson.restaurantPinCode);
+      formData.append("restaurantCity", formDataJson.restaurantCity);
+      formData.append("restaurantCountry", formDataJson.restaurantCountry);
+      formData.append(
+        "deliveryPrice",
+        (formDataJson.deliveryPrice * 100).toString()
+      );
+      formData.append(
+        "estimatedDeliveryTime",
+        formDataJson.estimatedDeliveryTime.toString()
+      );
+      formDataJson.cuisines.forEach((cuisine, index) => {
+        formData.append(`cuisines[${index}]`, cuisine);
+      });
+      formDataJson.menuItems.forEach((menuItem, index) => {
+        formData.append(`menuItems[${index}][itemName]`, menuItem.itemName);
+        formData.append(
+          `menuItems[${index}][itemDescription]`,
+          menuItem.itemDescription
+        );
+        formData.append(
+          `menuItems[${index}][itemPrice]`,
+          menuItem.itemPrice.toString()
+        );
+        if (menuItem.menuItemImageFile) {
+          formData.append(`menuItemImageFile`, menuItem.menuItemImageFile);
+        }
+      });
+
+      if (formDataJson.imageFile) {
+        formData.append("imageFile", formDataJson.imageFile);
+      }
+
+      console.log("before saving the form data => ", formData);
+      onSave(formData);
+    } catch (error) {
+      console.error("Error in form submission:", error);
+    }
   };
 
   return (
