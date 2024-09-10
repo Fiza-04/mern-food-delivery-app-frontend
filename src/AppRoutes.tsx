@@ -1,10 +1,11 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import Layout from "./layouts/layout";
-import HomePage from "./pages/HomePage";
+import LandingPage from "./pages/LandingPage";
 import AuthCallBackPage from "./auth/AuthCallBackPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import ProtectedRoutes from "./auth/ProtectedRoutes";
 import ManageRestaurantFormPage from "./pages/ManageRestaurantFormPage";
+import StorePage from "./pages/StorePage";
 
 const AppRoutes = () => {
   return (
@@ -12,8 +13,8 @@ const AppRoutes = () => {
       <Route
         path="/"
         element={
-          <Layout showHero={true}>
-            <HomePage />
+          <Layout>
+            <LandingPage />
           </Layout>
         }
       />
@@ -24,6 +25,14 @@ const AppRoutes = () => {
           element={
             <Layout>
               <UserProfilePage />
+            </Layout>
+          }
+        />
+        <Route
+          path="/restaurant"
+          element={
+            <Layout>
+              <StorePage />
             </Layout>
           }
         />

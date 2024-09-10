@@ -1,11 +1,21 @@
-import BusinessSection from "../components/HomPageComponents/BusinessSection";
-import HeroCard from "../components/HomPageComponents/HeroCard";
+import CuisineScrollbar from "../components/HomePageComponents/CuisineScrollbar";
+import IntroHeader from "../components/HomePageComponents/IntroHeader";
+import RestaurantsDisplay from "../components/HomePageComponents/RestaurantsDisplay";
 
 const HomePage = () => {
   return (
-    <div className="flex flex-col gap-12">
-      <HeroCard />
-      <BusinessSection />
+    <div>
+      {/* one deign image */}
+      <IntroHeader />
+      {/* vertical scroll bar for filter */}
+      <div className="mb-10">
+        <CuisineScrollbar />
+      </div>
+      {/* optional (more filters) */}
+      {/* restaurant cards */}
+      <div className="">
+        <RestaurantsDisplay />
+      </div>
     </div>
   );
 };
