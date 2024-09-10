@@ -8,6 +8,7 @@ import {
 } from "../../components/ui/form";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
+// import { AspectRatio } from "../../components/ui/aspect-ratio";
 
 type Props = {
   index: number;
@@ -15,7 +16,10 @@ type Props = {
 };
 
 const MenuItemInput = ({ index, removeMenuItem }: Props) => {
-  const { control } = useFormContext();
+  const { control, watch } = useFormContext();
+  const existimgMenuItemImageUrl = watch(
+    `menuItems.${index}.menuItemImageFile`
+  );
 
   return (
     <div className="space-y-4">
@@ -72,6 +76,7 @@ const MenuItemInput = ({ index, removeMenuItem }: Props) => {
             </FormItem>
           )}
         />
+
         <FormField
           control={control}
           name={`menuItems.${index}.menuItemImageFile`} // detects file path only when kept like this
@@ -94,6 +99,14 @@ const MenuItemInput = ({ index, removeMenuItem }: Props) => {
             </FormItem>
           )}
         />
+        {existimgMenuItemImageUrl && (
+          <div className="h-36 w-48">
+            <img
+              src={existimgMenuItemImageUrl}
+              className="rounded-md object-cover h-full w-full "
+            />
+          </div>
+        )}
         <Button
           type="button"
           onClick={removeMenuItem}
