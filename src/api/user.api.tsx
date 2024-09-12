@@ -82,6 +82,7 @@ export const useCreateMyUser = () => {
 // update user api endpoint
 type updateUserRequestType = {
   name: string;
+  phoneNumber: string;
   addressLine1: string;
   city: string;
   country: string;

@@ -5,7 +5,6 @@ import { Form } from "../../components/ui/form";
 import DetailsSection from "./DetailsSection";
 import { Separator } from "../../components/ui/separator";
 import CuisinesSection from "./CuisinesSection";
-import MenuSection from "./MenuSection";
 import ImageSection from "./ImageSection";
 import LoadingBtn from "../../components/LoadingBtn";
 import { Button } from "../../components/ui/button";
@@ -34,31 +33,14 @@ const formSchema = z
     cuisines: z.array(z.string()).nonempty({
       message: "Please select atleast one item",
     }),
-    // menu: z.array(
-    //   z.object({
-    //     categoryName: z.string().min(1, "Category name is required"),
-    //     categoryStatus: z.boolean(),
-    menuItems: z.array(
-      z.object({
-        itemName: z.string().min(1, "Item name is required"),
-        itemDescription: z.string().min(8, "Add a description"),
-        itemPrice: z.coerce.number().min(1, "Item name is required"),
-        menuItemImageFile: z
-          .union([
-            z.instanceof(File, { message: "Image is required" }),
-            z.string(),
-          ])
-          .optional(),
-        menuItemImageUrl: z.string().optional(),
-      })
-      //   ),
-      // })
-    ),
+    openingTime: z.string({ required_error: "Opening Time is required" }),
+    closingTime: z.string({ required_error: "Closing Time is required" }),
+    isAcceptingOrders: z.boolean(),
+    status: z.boolean(),
     imageUrl: z.string().optional(),
     imageFile: z
       .union([z.instanceof(File, { message: "Image is required" }), z.string()])
       .optional(),
-    isAcceptingOrders: z.boolean(),
   })
   .refine((data) => data.imageUrl || data.imageFile, {
     message: "Either image URL or image File must be provided",
@@ -78,22 +60,9 @@ const RestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       cuisines: [],
-      // menu: [
-      //   {
-      //     categoryName: "",
-      //     categoryStatus: true,
-      menuItems: [
-        {
-          itemName: "",
-          itemDescription: "",
-          itemPrice: 0,
-          menuItemImageFile: undefined,
-        },
-      ],
       imageFile: undefined,
       isAcceptingOrders: true,
-      // },
-      // ],
+      status: true,
     },
   });
 
@@ -105,16 +74,10 @@ const RestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
     const deliveryPriceFormatted = parseFloat(
       (restaurant.deliveryPrice / 100).toFixed(2)
     );
-    const menuItemsFormatted = restaurant.menuItems.map((item) => ({
-      ...item,
-      itemPrice: parseFloat((parseFloat(item.itemPrice) / 100).toFixed(2)),
-      menuItemImageFile: item.menuItemImageFile || "",
-    }));
 
     const upadatedRestaurant = {
       ...restaurant,
       deliveryPrice: deliveryPriceFormatted,
-      menuItems: menuItemsFormatted,
     };
     console.log("upadatedRestaurant => ", upadatedRestaurant);
 
@@ -140,23 +103,17 @@ const RestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
         "estimatedDeliveryTime",
         formDataJson.estimatedDeliveryTime.toString()
       );
+      formData.append("openingTime", formDataJson.openingTime.toString());
+      formData.append("closingTime", formDataJson.closingTime.toString());
+      formData.append(
+        "isAcceptingOrders",
+        formDataJson.isAcceptingOrders.toString()
+      );
+      formData.append("status", formDataJson.status.toString());
       formDataJson.cuisines.forEach((cuisine, index) => {
         formData.append(`cuisines[${index}]`, cuisine);
       });
-      formDataJson.menuItems.forEach((menuItem, index) => {
-        formData.append(`menuItems[${index}][itemName]`, menuItem.itemName);
-        formData.append(
-          `menuItems[${index}][itemDescription]`,
-          menuItem.itemDescription
-        );
-        formData.append(
-          `menuItems[${index}][itemPrice]`,
-          (menuItem.itemPrice * 100).toString()
-        );
-        if (menuItem.menuItemImageFile) {
-          formData.append(`menuItemImageFile`, menuItem.menuItemImageFile);
-        }
-      });
+
       console.log("restaurantform => ", formData);
 
       if (formDataJson.imageFile) {
@@ -171,21 +128,27 @@ const RestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
   };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-5 bg-slate-50 p-5 rounded-[10px]"
-      >
-        <DetailsSection />
-        <Separator />
-        <CuisinesSection />
-        <Separator />
-        <MenuSection />
-        <Separator />
-        <ImageSection />
-        {isLoading ? <LoadingBtn /> : <Button type="submit">Submit</Button>}
-      </form>
-    </Form>
+    <>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-5 bg-slate-50 p-5 rounded-[10px]"
+        >
+          <DetailsSection />
+          <Separator />
+          <CuisinesSection />
+          <Separator />
+          <ImageSection />
+          {isLoading ? <LoadingBtn /> : <Button type="submit">Submit</Button>}
+        </form>
+      </Form>
+      <div className="pt-5 text-slate-400 pl-5">
+        <p>If you want to delete your restaurant</p>
+        <Button className="bg-red-600  hover:bg-red-700 tracking-wide p-5 mt-2">
+          Delete
+        </Button>
+      </div>
+    </>
   );
 };
 

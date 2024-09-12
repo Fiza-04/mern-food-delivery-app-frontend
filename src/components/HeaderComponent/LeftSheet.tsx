@@ -1,4 +1,7 @@
+import React from "react";
 import {
+  ChartNoAxesColumn,
+  CookingPot,
   Heart,
   Home,
   Menu,
@@ -17,11 +20,15 @@ import { Separator } from "../ui/separator";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useAccount } from "../../context/AccountProvider";
+import { useGetCurrentUser } from "../../api/user.api";
 
 const LeftSheet = () => {
-  const { user, logout } = useAuth0();
+  const { logout } = useAuth0();
+  const { state, dispatch } = useAccount();
+  const { currentUser } = useGetCurrentUser();
 
-  const btnData = [
+  const userAccData = [
     {
       title: "Home",
       icon: <Home size={20} className="mt-[1px]" />,
@@ -44,6 +51,33 @@ const LeftSheet = () => {
     },
   ];
 
+  const businessAccData = [
+    {
+      title: "Your Restaurant",
+      icon: <Home size={20} className="mt-[1px]" />,
+      link: "/manage-restaurant",
+    },
+    {
+      title: "Menu",
+      icon: <CookingPot size={20} className="mt-[1px]" />,
+      link: "/add-menu",
+    },
+    {
+      title: "Orders",
+      icon: <ReceiptText size={20} className="mt-[1px]" />,
+      link: "/manage-orders",
+    },
+    {
+      title: "Statistics",
+      icon: <ChartNoAxesColumn size={20} className="mt-[1px]" />,
+      link: "/stats",
+    },
+  ];
+
+  const handleAccounts = () => {
+    dispatch({ type: "TOGGLE_ACCOUNT_TYPE" });
+  };
+
   return (
     <Sheet>
       <SheetTrigger>
@@ -60,10 +94,10 @@ const LeftSheet = () => {
               />
               <div className="flex flex-col space-y-2">
                 <span className="text-[20px] text-black font-semibold">
-                  {user?.name ? user.name : "New User"}
+                  {currentUser?.name || "New User"}
                 </span>
                 <span className="text-slate-500 text-[14px] tracking-wide font-normal">
-                  {user?.email}
+                  {currentUser?.email}
                 </span>
               </div>
             </div>
@@ -74,8 +108,12 @@ const LeftSheet = () => {
           <Separator className="bg-green-200 mt-5" />
 
           <div className="flex flex-col space-y-7 mt-10 text-black text-[19px]">
-            {btnData.map((item) => (
-              <Link to={item.link} className="flex flex-row space-x-5">
+            {(state.accountType ? businessAccData : userAccData).map((item) => (
+              <Link
+                to={item.link}
+                key={item.title}
+                className="flex flex-row space-x-5"
+              >
                 {item.icon}
                 <div>{item.title}</div>
               </Link>
@@ -83,12 +121,17 @@ const LeftSheet = () => {
           </div>
           <div className="flex flex-col space-y-6 mt-6 text-black text-[16px] font-medium">
             <Separator className="bg-green-200 mt-7 mb-5" />
-            <Link to="/manage-restaurant">Create a business account</Link>
-            <Link to="/">Add your business</Link>
+            <p className="cursor-pointer" onClick={handleAccounts}>
+              {state.accountType ? (
+                <Link to="/">Go Back to Buying Account</Link>
+              ) : (
+                <Link to="/manage-restaurant">Add your business</Link>
+              )}
+            </p>
             <Link to="/">Sign up to deliver</Link>
           </div>
           <Button
-            className="mt-16 bg-black hover:bg-zinc-950 text-[15px] font-normal py-6  shadow-none"
+            className="mt-16 bg-black hover:bg-zinc-950 text-[15px] font-normal py-6 shadow-none"
             onClick={() => logout()}
           >
             Sign Out

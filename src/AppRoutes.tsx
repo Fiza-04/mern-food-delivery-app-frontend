@@ -6,48 +6,51 @@ import UserProfilePage from "./pages/UserProfilePage";
 import ProtectedRoutes from "./auth/ProtectedRoutes";
 import ManageRestaurantFormPage from "./pages/ManageRestaurantFormPage";
 import StorePage from "./pages/StorePage";
+import { AccountProvider } from "./context/AccountProvider";
 
 const AppRoutes = () => {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <Layout>
-            <LandingPage />
-          </Layout>
-        }
-      />
-      <Route path="/auth-callback" element={<AuthCallBackPage />} />
-      <Route element={<ProtectedRoutes />}>
+    <AccountProvider>
+      <Routes>
         <Route
-          path="/user-profile"
+          path="/"
           element={
             <Layout>
-              <UserProfilePage />
+              <LandingPage />
             </Layout>
           }
         />
-        <Route
-          path="/restaurant"
-          element={
-            <Layout>
-              <StorePage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/manage-restaurant"
-          element={
-            <Layout>
-              <ManageRestaurantFormPage />
-            </Layout>
-          }
-        />
-      </Route>
+        <Route path="/auth-callback" element={<AuthCallBackPage />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route
+            path="/user-profile"
+            element={
+              <Layout>
+                <UserProfilePage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/restaurant/*"
+            element={
+              <Layout>
+                <StorePage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/manage-restaurant"
+            element={
+              <Layout>
+                <ManageRestaurantFormPage />
+              </Layout>
+            }
+          />
+        </Route>
 
-      <Route path="/*" element={<Navigate to="/" />} />
-    </Routes>
+        <Route path="/*" element={<Navigate to="/" />} />
+      </Routes>
+    </AccountProvider>
   );
 };
 

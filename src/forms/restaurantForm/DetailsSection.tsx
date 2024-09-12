@@ -8,6 +8,13 @@ import {
   FormMessage,
 } from "../../components/ui/form";
 import { Input } from "../../components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 
 const DetailsSection = () => {
   const { control } = useFormContext();
@@ -106,6 +113,80 @@ const DetailsSection = () => {
               <FormLabel>Estimated Delivery Time (minutes)</FormLabel>
               <FormControl>
                 <Input {...field} className="bg-white" placeholder="30" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+      <div className="flex flex-row gap-6">
+        <FormField
+          control={control}
+          name="openingTime"
+          render={({ field }) => (
+            <FormItem className="w-[20%]">
+              <FormLabel>Opening Time</FormLabel>
+              <FormControl>
+                <Input {...field} className="bg-white" placeholder="08:00" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="closingTime"
+          render={({ field }) => (
+            <FormItem className="w-[20%]">
+              <FormLabel>Closing Time</FormLabel>
+              <FormControl>
+                <Input {...field} className="bg-white" placeholder="17:30" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+      <div className="flex flex-row gap-6">
+        <FormField
+          control={control}
+          name="isAccepting"
+          render={({ field }) => (
+            <FormItem className="w-[20%]">
+              <FormLabel>Are you accepting orders?</FormLabel>
+              <FormControl>
+                <Select>
+                  <SelectTrigger className="w-[180px] bg-white">
+                    <SelectValue placeholder="Yes" />
+                  </SelectTrigger>
+                  <SelectContent {...field}>
+                    <SelectItem value="true">Yes</SelectItem>
+                    <SelectItem value="false">No</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name="status"
+          render={({ field }) => (
+            <FormItem className="w-[20%]">
+              <FormLabel className="whitespace-nowrap">
+                Do you want to deactivate your restaurant?
+              </FormLabel>
+              <FormControl>
+                <Select>
+                  <SelectTrigger className="w-[180px] bg-white">
+                    <SelectValue placeholder="No" />
+                  </SelectTrigger>
+                  <SelectContent {...field}>
+                    <SelectItem value="false">Yes</SelectItem>
+                    <SelectItem value="true">No</SelectItem>
+                  </SelectContent>
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>

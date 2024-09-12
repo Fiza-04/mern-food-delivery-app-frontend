@@ -2,6 +2,7 @@ export type User = {
   _id: string;
   name: string;
   email: string;
+  phoneNumber: string;
   addressLine1: string;
   addressLine2: string;
   postcode: string;
@@ -28,8 +29,11 @@ export type Restaurant = {
   deliveryPrice: number;
   estimatedDeliveryTime: number;
   cuisines: string[];
-  menuItems: MenuItem[];
+  // menuItems: MenuItem[];
   imageFile: string;
+  openingTime: string;
+  closingTime: string;
   isAcceptingOrders: boolean;
+  status: boolean;
   lastUpdated: string;
 };

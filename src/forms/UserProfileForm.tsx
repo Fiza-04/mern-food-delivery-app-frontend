@@ -19,6 +19,7 @@ import { useEffect } from "react";
 const formSchema = z.object({
   email: z.string().optional(),
   name: z.string().min(1, "Name is required"),
+  phoneNumber: z.string().min(8, "Phone Number is required"),
   addressLine1: z.string().min(5, "Address Line is required"),
   addressLine2: z.string().optional(),
   postcode: z.string().min(5, "Enter valid Post Code"),
@@ -54,19 +55,34 @@ const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
             View And Update your profile details here
           </FormDescription>
         </div>
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input {...field} className="bg-white" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex flex-col md:flex-row gap-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input {...field} className="bg-white" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phoneNumber"
+            render={({ field }) => (
+              <FormItem className="flex-1">
+                <FormLabel>Phone Number</FormLabel>
+                <FormControl>
+                  <Input {...field} className="bg-white" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="email"

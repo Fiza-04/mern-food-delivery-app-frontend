@@ -5,6 +5,38 @@ import { Restaurant } from "../types";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+// get all restaurants data
+export const useGetAllRestaurants = () => {
+  const { getAccessTokenSilently } = useAuth0();
+
+  const getAllRestaurantsRequest = async (): Promise<Restaurant[]> => {
+    const accessToken = await getAccessTokenSilently();
+
+    const response = await fetch(`${API_BASE_URL}/api/restaurant/all`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch response");
+    }
+
+    const data = await response.json();
+    console.log("All restaurants: ", data);
+    return data;
+  };
+
+  const { data: restaurants } = useQuery({
+    queryKey: ["fetchAllRestauransts"],
+    queryFn: getAllRestaurantsRequest,
+  });
+
+  return { restaurants };
+};
+
+// get only current users restaurant (admin)
 export const useGetRestaurant = () => {
   const { getAccessTokenSilently } = useAuth0();
 
@@ -33,6 +65,7 @@ export const useGetRestaurant = () => {
   return { restaurant, isLoading };
 };
 
+// create Restaurant (admin)
 export const useCreateRestaurant = () => {
   const { getAccessTokenSilently } = useAuth0();
 
@@ -78,8 +111,10 @@ export const useCreateRestaurant = () => {
   };
 };
 
+// update restaurant (admin)
 export const useUpdateRestaurant = () => {
   const { getAccessTokenSilently } = useAuth0();
+
   const updateRestaurantRequest = async (
     restaurantFormData: FormData
   ): Promise<Restaurant> => {
@@ -91,9 +126,14 @@ export const useUpdateRestaurant = () => {
       },
       body: restaurantFormData,
     });
+
+    console.log("formdata in updat fn => ", restaurantFormData);
     if (!response.ok) {
       throw new Error("Failed to update Restaurant Data");
     }
+
+    console.log("response.json in updat fn => ", response.json());
+
     return response.json();
   };
   const mutation = useMutation({
