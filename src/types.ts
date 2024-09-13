@@ -37,3 +37,10 @@ export type Restaurant = {
   status: boolean;
   lastUpdated: string;
 };
+
+export type Menu = {
+  _id: string;
+  restaurant: string;
+  menuName: string;
+  menuActive: boolean;
+};

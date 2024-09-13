@@ -38,9 +38,7 @@ const formSchema = z
     isAcceptingOrders: z.boolean(),
     status: z.boolean(),
     imageUrl: z.string().optional(),
-    imageFile: z
-      .union([z.instanceof(File, { message: "Image is required" }), z.string()])
-      .optional(),
+    imageFile: z.union([z.instanceof(File), z.string()]).optional(),
   })
   .refine((data) => data.imageUrl || data.imageFile, {
     message: "Either image URL or image File must be provided",
@@ -90,7 +88,8 @@ const RestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
       const formData = new FormData();
 
       formData.append("restaurantName", formDataJson.restaurantName);
-      console.log("restaurantNAme => ", formDataJson.restaurantName);
+      console.log("restaurantNAme => ", formDataJson.restaurantAddress);
+      console.log("restaurantNAme formData=> ", formData);
       formData.append("restaurantAddress", formDataJson.restaurantAddress);
       formData.append("restaurantPinCode", formDataJson.restaurantPinCode);
       formData.append("restaurantCity", formDataJson.restaurantCity);
@@ -116,8 +115,12 @@ const RestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
 
       console.log("restaurantform => ", formData);
 
-      if (formDataJson.imageFile) {
+      if (formDataJson.imageFile instanceof File) {
         formData.append("imageFile", formDataJson.imageFile);
+        console.log("imageFile appended => ", formData);
+      } else if (formDataJson.imageUrl) {
+        formData.append("imageUrl", formDataJson.imageUrl);
+        console.log("imageUrl appended => ", formData);
       }
 
       console.log("before saving the form data => ", formData);

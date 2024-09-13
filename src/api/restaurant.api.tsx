@@ -119,6 +119,8 @@ export const useUpdateRestaurant = () => {
     restaurantFormData: FormData
   ): Promise<Restaurant> => {
     const accessToken = await getAccessTokenSilently();
+
+    console.log("restaurantFormData in api => ", restaurantFormData);
     const response = await fetch(`${API_BASE_URL}/api/restaurant`, {
       method: "PUT",
       headers: {
@@ -134,7 +136,9 @@ export const useUpdateRestaurant = () => {
 
     console.log("response.json in updat fn => ", response.json());
 
-    return response.json();
+    const data = await response.json();
+    console.log("Updated restaurant data => ", data);
+    return data;
   };
   const mutation = useMutation({
     mutationFn: updateRestaurantRequest,

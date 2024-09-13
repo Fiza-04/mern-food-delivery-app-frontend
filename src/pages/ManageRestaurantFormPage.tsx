@@ -14,6 +14,7 @@ const ManageRestaurantFormPage = () => {
 
   const isEditing = !!restaurant;
 
+  console.log(isEditing);
   return (
     <RestaurantForm
       restaurant={restaurant}

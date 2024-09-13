@@ -21,6 +21,7 @@ const ImageSection = () => {
     if (file) {
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
+      console.log("Selected Image File:", file);
     }
   };
 
