@@ -8,6 +8,7 @@ import ManageRestaurantFormPage from "./pages/ManageRestaurantFormPage";
 import StorePage from "./pages/StorePage";
 import { AccountProvider } from "./context/AccountProvider";
 import ManageMenuFormPage from "./pages/ManageMenuFormPage";
+import ManageMenuItemPage from "./pages/ManageMenuItemPage";
 
 const AppRoutes = () => {
   return (
@@ -54,6 +55,14 @@ const AppRoutes = () => {
             element={
               <Layout>
                 <ManageMenuFormPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/menu-item/*"
+            element={
+              <Layout>
+                <ManageMenuItemPage />
               </Layout>
             }
           />

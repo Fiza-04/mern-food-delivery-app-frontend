@@ -23,7 +23,7 @@ import { Button } from "../../../components/ui/button";
 
 const formSchema = z.object({
   menuName: z.string().min(2, {
-    message: "menu title must be at least 2 characters.",
+    message: "Menu title must be at least 2 characters.",
   }),
   menuActive: z.boolean(),
 });
@@ -31,8 +31,11 @@ const formSchema = z.object({
 type MenuFormData = z.infer<typeof formSchema>;
 
 type Props = {
-  menu?: Menu;
-  onSave: (MenuFormData: FormData) => void;
+  menu?: {
+    menuName: string;
+    menuActive: boolean;
+  };
+  onSave: (MenuFormData: MenuFormData) => void;
   isLoading: boolean;
 };
 
@@ -41,19 +44,13 @@ const MenuForm = ({ onSave, isLoading, menu }: Props) => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       menuName: menu?.menuName || "",
-      menuActive: menu?.menuActive ?? true, // Default to true
+      menuActive: menu?.menuActive ?? true,
     },
   });
 
   const onSubmit = (formDataJson: MenuFormData) => {
     try {
-      const formData = new FormData();
-
-      formData.append("menuName", formDataJson.menuName);
-
-      console.log("menu form", formData);
-      formData.append("menuActive", formDataJson.menuActive.toString());
-      onSave(formData);
+      onSave({ ...formDataJson, _id: menu?._id });
     } catch (error) {
       console.error("Error in form submission:", error);
     }
@@ -92,7 +89,7 @@ const MenuForm = ({ onSave, isLoading, menu }: Props) => {
                     <SelectTrigger className="w-[180px] bg-white">
                       <SelectValue placeholder="Yes" />
                     </SelectTrigger>
-                    <SelectContent {...field}>
+                    <SelectContent>
                       <SelectItem value="true">Yes</SelectItem>
                       <SelectItem value="false">No</SelectItem>
                     </SelectContent>

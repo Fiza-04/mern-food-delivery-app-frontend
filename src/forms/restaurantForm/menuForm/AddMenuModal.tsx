@@ -4,13 +4,15 @@ import {
   DialogContent,
   DialogTitle,
 } from "../../../components/ui/dialog";
+import { Menu } from "../../../types";
 import MenuForm from "./MenuForm";
 
 interface MenuProps {
-  onSave: (menuFormData: FormData) => void;
+  onSave: (menuFormData: Menu) => void;
   isLoading: boolean;
   isOpen: boolean;
   onClose: () => void;
+  menu?: { menuName: string; menuActive: boolean };
 }
 
 const AddMenuModal: React.FC<MenuProps> = ({
@@ -18,6 +20,7 @@ const AddMenuModal: React.FC<MenuProps> = ({
   isLoading,
   isOpen,
   onClose,
+  menu,
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -26,9 +29,9 @@ const AddMenuModal: React.FC<MenuProps> = ({
         className="flex flex-col space-y-2"
       >
         <DialogTitle className="whitespace-nowrap text-xl font-medium tracking-wide">
-          Add a New Menu
+          {menu ? "Edit Menu" : "Add a New Menu"}
         </DialogTitle>
-        <MenuForm onSave={onSave} isLoading={isLoading} />
+        <MenuForm onSave={onSave} isLoading={isLoading} menu={menu} />
         <DialogClose onClick={onClose} />
       </DialogContent>
     </Dialog>
