@@ -16,57 +16,35 @@ type Props = {
 };
 
 const MenuItemInput = ({ index, removeMenuItem }: Props) => {
-  const { control, watch } = useFormContext();
-  const existimgMenuItemImageUrl = watch(
-    `menuItems.${index}.menuItemImageFile`
-  );
+  const { control } = useFormContext();
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-row items-end space-x-10 ">
-        <FormField
-          control={control}
-          name={`menuItems.${index}.itemName`}
-          render={({ field }) => (
-            <FormItem className="flex items-center gap-2 w-[30%]">
-              <FormLabel>
-                Name <FormMessage className="pt-1" />
-              </FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="Waffle Bytes"
-                  className="bg-white w-[100%]"
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={control}
-          name={`menuItems.${index}.itemDescription`}
-          render={({ field }) => (
-            <FormItem className="flex items-center gap-2 w-[60%]">
-              <FormLabel className="whitespace-nowrap">
-                Desicription <FormMessage className="pt-1" />
-              </FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="Waffles, Milk Chocolate, Strawberry"
-                  className="bg-white"
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-      </div>
+    <div className="flex flex-row space-x-4">
+      <FormField
+        control={control}
+        name={`menuItems.${index}.itemName`}
+        render={({ field }) => (
+          <FormItem className="flex items-center gap-2 w-[30%]">
+            <FormLabel>
+              Name <FormMessage className="pt-1" />
+            </FormLabel>
+            <FormControl>
+              <Input
+                {...field}
+                placeholder="Waffle Bytes"
+                className="bg-white w-[100%]"
+              />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+
       <div className="flex flex-row items-end space-x-10 ">
         <FormField
           control={control}
           name={`menuItems.${index}.itemPrice`}
           render={({ field }) => (
-            <FormItem className="flex items-center gap-2 w-[25%]">
+            <FormItem className="flex items-center gap-2 w-[50%]">
               <FormLabel className="whitespace-nowrap">
                 Price (£) <FormMessage className="pt-1" />
               </FormLabel>
@@ -77,36 +55,6 @@ const MenuItemInput = ({ index, removeMenuItem }: Props) => {
           )}
         />
 
-        <FormField
-          control={control}
-          name={`menuItems.${index}.menuItemImageFile`} // detects file path only when kept like this
-          render={({ field }) => (
-            <FormItem className="flex items-center gap-2 w-[30%]">
-              <FormLabel className="whitespace-nowrap">
-                Image (max 5mb) <FormMessage className="pt-1" />
-              </FormLabel>
-              <FormControl>
-                <Input
-                  className="bg-white"
-                  type="file"
-                  accept=".jpg, .jpeg, .png"
-                  onChange={
-                    (e) =>
-                      field.onChange(e.target.files ? e.target.files[0] : null) // Properly set the file
-                  }
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        {existimgMenuItemImageUrl && (
-          <div className="h-36 w-48">
-            <img
-              src={existimgMenuItemImageUrl}
-              className="rounded-md object-cover h-full w-full "
-            />
-          </div>
-        )}
         <Button
           type="button"
           onClick={removeMenuItem}

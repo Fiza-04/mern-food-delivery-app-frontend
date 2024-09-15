@@ -1,5 +1,5 @@
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { FormDescription, FormField, FormItem } from "../../components/ui/form";
+import { FormField, FormItem } from "../../components/ui/form";
 import { Button } from "../../components/ui/button";
 import MenuItemInput from "./MenuItemInput";
 
@@ -13,13 +13,9 @@ const MenuSection = () => {
 
   return (
     <div className="space-y-2">
-      <div>
-        <h2 className="font-bold">Menu</h2>
-        <FormDescription>Create your Menu</FormDescription>
-      </div>
       <FormField
         control={control}
-        name="menuItems"
+        name="extras"
         render={() => (
           <FormItem className="flex flex-col gap-2 pb-5">
             {fields.map((_, index) => (
@@ -36,7 +32,7 @@ const MenuSection = () => {
         onClick={() => append({ name: "", price: "", image: "" })}
         className="bg-green-600 hover:bg-green-700 mt-10"
       >
-        Add a Menu Item
+        Add a extras
       </Button>
     </div>
   );

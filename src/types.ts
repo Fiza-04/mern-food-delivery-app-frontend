@@ -10,14 +10,6 @@ export type User = {
   country: string;
 };
 
-export type MenuItem = {
-  _id: string;
-  itemName: string;
-  itemDescription: string;
-  itemPrice: string;
-  menuItemImageFile: string;
-};
-
 export type Restaurant = {
   _id: string;
   user: string;
@@ -29,7 +21,6 @@ export type Restaurant = {
   deliveryPrice: number;
   estimatedDeliveryTime: number;
   cuisines: string[];
-  // menuItems: MenuItem[];
   imageFile: string;
   openingTime: string;
   closingTime: string;
@@ -43,4 +34,18 @@ export type Menu = {
   restaurant: string;
   menuName: string;
   menuActive: boolean;
+};
+
+export type MenuItem = {
+  _id: string;
+  menuId: string;
+  itemName: string;
+  itemDescription: string;
+  itemPrice: string;
+  extras: Array<{
+    name: string;
+    price: string;
+  }>;
+  menuItemImageFile: string;
+  menuItemActive: boolean;
 };
