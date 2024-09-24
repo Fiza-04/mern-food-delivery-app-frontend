@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import {
   Dialog,
   DialogClose,
@@ -22,6 +23,12 @@ const AddMenuModal: React.FC<MenuProps> = ({
   onClose,
   menu,
 }) => {
+  const { restaurantId } = useParams();
+
+  const handleSave = (menuFormData: Menu) => {
+    onSave({ ...menuFormData, restaurant: restaurantId || "" });
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
@@ -29,9 +36,9 @@ const AddMenuModal: React.FC<MenuProps> = ({
         className="flex flex-col space-y-2"
       >
         <DialogTitle className="whitespace-nowrap text-xl font-medium tracking-wide">
-          {menu ? "Edit Menu" : "Add a New Menu"}
+          {menu ? "Edit Menu" : `Add a New Menu`}
         </DialogTitle>
-        <MenuForm onSave={onSave} isLoading={isLoading} menu={menu} />
+        <MenuForm onSave={handleSave} isLoading={isLoading} menu={menu} />
         <DialogClose onClick={onClose} />
       </DialogContent>
     </Dialog>

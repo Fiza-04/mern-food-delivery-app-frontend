@@ -50,7 +50,7 @@ const MenuForm = ({ onSave, isLoading, menu }: Props) => {
 
   const onSubmit = (formDataJson: MenuFormData) => {
     try {
-      onSave({ ...formDataJson, _id: menu?._id });
+      onSave({ ...formDataJson, _id: menu?._id, restaurantId });
     } catch (error) {
       console.error("Error in form submission:", error);
     }

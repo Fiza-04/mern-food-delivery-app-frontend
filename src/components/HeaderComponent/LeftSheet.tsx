@@ -22,11 +22,16 @@ import { Button } from "../ui/button";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useAccount } from "../../context/AccountProvider";
 import { useGetCurrentUser } from "../../api/user.api";
+import { useGetRestaurant } from "../../api/restaurant.api";
 
 const LeftSheet = () => {
   const { logout } = useAuth0();
   const { state, dispatch } = useAccount();
   const { currentUser } = useGetCurrentUser();
+  const { restaurant } = useGetRestaurant();
+
+  const restaurantId = restaurant?._id || "";
+  console.log("in leftsheet", restaurantId);
 
   const userAccData = [
     {
@@ -60,7 +65,7 @@ const LeftSheet = () => {
     {
       title: "Menu",
       icon: <CookingPot size={20} className="mt-[1px]" />,
-      link: "/add-menu",
+      link: `/add-menu/${restaurantId}`,
     },
     {
       title: "Orders",
@@ -112,7 +117,9 @@ const LeftSheet = () => {
               <Link
                 to={item.link}
                 key={item.title}
-                className="flex flex-row space-x-5"
+                className={`flex flex-row space-x-5 ${
+                  restaurantId === "" ? "cursor-not-allowed" : ""
+                }`}
               >
                 {item.icon}
                 <div>{item.title}</div>
