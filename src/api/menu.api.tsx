@@ -2,21 +2,26 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Menu } from "../types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useParams } from "react-router-dom";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const useGetAllMenus = () => {
+export const useGetRestaurantMenus = () => {
   const { getAccessTokenSilently } = useAuth0();
+  const { restaurantId } = useParams();
 
-  const getAllMenusRequest = async (): Promise<Menu[]> => {
+  const getRestaurantMenuRequest = async (): Promise<Menu[]> => {
     const accessToken = await getAccessTokenSilently();
 
-    const response = await fetch(`${API_BASE_URL}/api/menu/all`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/api/menu/all/${restaurantId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
 
     if (!response.ok) {
       throw new Error("Failed to fetch menus");
@@ -27,7 +32,7 @@ export const useGetAllMenus = () => {
 
   const { data: menus, refetch } = useQuery({
     queryKey: ["fetchAllMenus"],
-    queryFn: getAllMenusRequest,
+    queryFn: getRestaurantMenuRequest,
   });
   return { menus, refetch };
 };
@@ -39,9 +44,10 @@ export const useCreateMenu = (refetch: () => void) => {
     menuFormData: Menu
   ): Promise<Menu> => {
     const accessToken = await getAccessTokenSilently();
+    console.log("menuFormData.restaurant", menuFormData.restaurant);
     const url = menuFormData._id
       ? `${API_BASE_URL}/api/menu/edit/${menuFormData._id}` // Update URL
-      : `${API_BASE_URL}/api/menu/add`; // Create URL
+      : `${API_BASE_URL}/api/menu/add/${menuFormData.restaurant}`; // Create URL
 
     const response = await fetch(url, {
       method: menuFormData._id ? "PUT" : "POST", // Use PUT for update, POST for create

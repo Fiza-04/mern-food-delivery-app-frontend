@@ -8,8 +8,10 @@ const MenuSection = () => {
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "menuItems",
+    name: "extras",
   });
+
+  console.log("Current fields in MenuSection:", fields);
 
   return (
     <div className="space-y-2">
@@ -20,6 +22,7 @@ const MenuSection = () => {
           <FormItem className="flex flex-col gap-2 pb-5">
             {fields.map((_, index) => (
               <MenuItemInput
+                key={index}
                 index={index}
                 removeMenuItem={() => remove(index)}
               />
@@ -29,7 +32,7 @@ const MenuSection = () => {
       />
       <Button
         type="button"
-        onClick={() => append({ name: "", price: "", image: "" })}
+        onClick={() => append({ name: "", price: 0 })}
         className="bg-green-600 hover:bg-green-700 mt-10"
       >
         Add a extras

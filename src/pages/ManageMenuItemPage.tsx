@@ -2,9 +2,11 @@ import { Plus } from "lucide-react";
 import { Button } from "../components/ui/button";
 import AddMenuItemModal from "../components/MenuComponents.tsx/AddMenuItemModal";
 import { useState } from "react";
+import { useCreateMenuItem } from "../api/menuItem.api";
 
 const ManageMenuItemPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { createMenuItem, isLoading } = useCreateMenuItem();
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -25,7 +27,12 @@ const ManageMenuItemPage = () => {
           <p>Add Menu Item</p>
         </Button>
       </div>
-      <AddMenuItemModal isOpen={isModalOpen} onClose={closeModal} />
+      <AddMenuItemModal
+        onSave={createMenuItem}
+        isLoading={isLoading}
+        isOpen={isModalOpen}
+        onClose={closeModal}
+      />
     </div>
   );
 };

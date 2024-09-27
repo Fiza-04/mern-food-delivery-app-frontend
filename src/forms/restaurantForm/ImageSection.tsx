@@ -10,11 +10,16 @@ import { Input } from "../../components/ui/input";
 import { AspectRatio } from "../../components/ui/aspect-ratio";
 import React, { useState } from "react";
 
-const ImageSection = () => {
+type Props = {
+  imageFieldName: string; // Field name to bind to the form
+  description: string; // Description for the image upload section
+};
+
+const ImageSection = ({ imageFieldName, description }: Props) => {
   const { control, watch } = useFormContext();
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const existingImageUrl = watch("imageFile");
+  const existingImageUrl = watch(imageFieldName); // Watch for changes in the specified field
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -28,9 +33,7 @@ const ImageSection = () => {
     <div className="space-y-7 pb-3">
       <div>
         <h2 className="text-2xl font-bold">Image</h2>
-        <FormDescription>
-          Add your Restaurants Image that will be visible to your clients.
-        </FormDescription>
+        <FormDescription>{description}</FormDescription>
       </div>
       <div className="flex flex-col gap-8 w-[50%]">
         {imagePreview || existingImageUrl ? (
@@ -50,7 +53,7 @@ const ImageSection = () => {
         )}
         <FormField
           control={control}
-          name="imageFile"
+          name={imageFieldName} // Use dynamic field name
           render={({ field }) => (
             <FormItem>
               <FormControl>

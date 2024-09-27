@@ -2,19 +2,23 @@ import { Plus } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { useState } from "react";
 import AddMenuModal from "../forms/restaurantForm/menuForm/AddMenuModal";
-import { useCreateMenu, useDeleteMenu, useGetAllMenus } from "../api/menu.api";
+import {
+  useCreateMenu,
+  useDeleteMenu,
+  useGetRestaurantMenus,
+} from "../api/menu.api";
 import DisplayMenuTable from "../components/MenuComponents.tsx/DisplayMenuTable";
 import { Menu } from "../types";
 
 const ManageMenuFormPage = () => {
-  const { menus = [], refetch } = useGetAllMenus();
+  const { menus = [], refetch } = useGetRestaurantMenus();
   const { addMenu, isLoading } = useCreateMenu(refetch);
   const { deleteMenu } = useDeleteMenu(refetch);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState<Menu | null>(null);
 
   const openModal = (menu?: Menu) => {
-    setSelectedMenu(menu || null); // Open modal with selected menu or default to null
+    setSelectedMenu(menu || null);
     setIsModalOpen(true);
   };
 

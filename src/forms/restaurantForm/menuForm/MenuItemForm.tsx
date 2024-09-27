@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import z from "zod";
-import { useCreateMenuItem } from "../../../api/menuItem.api";
 import LoadingBtn from "../../../components/LoadingBtn";
 import { Button } from "../../../components/ui/button";
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
@@ -13,72 +13,83 @@ import {
 } from "../../../components/ui/form";
 import { Input } from "../../../components/ui/input";
 import MenuSection from "../MenuSection";
+import ImageSection from "../ImageSection";
 
-const menuItemSchema = z.object({
-  itemName: z.string().min(1, "Item Name is required"),
-  itemDescription: z.string().min(1, "Description is required"),
-  itemPrice: z.string().min(0, "Price must be greater than zero"),
-  extras: z
-    .array(
-      z.object({
-        name: z.string().min(1, "Extra name is required"),
-        price: z.number().min(0, "Extra price must be greater than zero"),
-      })
-    )
-    .optional(),
-  menuItemImageUrl: z.string().optional(),
-  menuItemImageFile: z.instanceof(File).optional(),
-  menuItemActive: z.boolean(),
-});
+const menuItemSchema = z
+  .object({
+    itemName: z.string().min(1, "Item Name is required"),
+    itemDescription: z.string().min(1, "Description is required"),
+    itemPrice: z.coerce.number({
+      required_error: "Item Price is required",
+      invalid_type_error: "Price must be greater than zero",
+    }),
+    extras: z
+      .array(
+        z.object({
+          name: z.string().min(1, "Extra name is required"),
+          price: z.number().min(0, "Extra price must be greater than zero"),
+        })
+      )
+      .optional(),
+    menuItemImageUrl: z.string().optional(),
+    menuItemImageFile: z.union([z.instanceof(File), z.string()]).optional(),
+    menuItemActive: z.boolean(),
+  })
+  .refine((data) => data.menuItemImageUrl || data.menuItemImageFile, {
+    message: "Either image URL or image File must be provided",
+    path: ["menuItemImageFile"],
+  });
 
 type MenuItemFormData = z.infer<typeof menuItemSchema>;
 
 type Props = {
+  onSave: (MenuItemFormData: FormData) => void;
   isLoading: boolean;
 };
 
-const MenuItemForm = ({ isLoading }: Props) => {
-  // const existimgMenuItemImageUrl = watch(`menuItemImageFile`);
+const MenuItemForm = ({ onSave, isLoading }: Props) => {
+  console.log("Initializing MenuItemForm");
 
-  const methods = useForm<MenuItemFormData>({
+  const form = useForm<MenuItemFormData>({
     resolver: zodResolver(menuItemSchema),
     defaultValues: {
       extras: [],
+      menuItemImageFile: undefined,
       menuItemActive: true,
     },
   });
 
-  const { createMenuItem } = useCreateMenuItem();
+  console.log("Rendering MenuItemForm", form);
 
-  const onSubmit = async (formDataJson: MenuItemFormData) => {
-    try {
-      console.log("onsubmitting menuItem data: ", formDataJson);
-      const formData = new FormData();
+  const onSubmit = (formDataJson: MenuItemFormData) => {
+    console.log("Form data being submitted: ", formDataJson);
 
-      formData.append("itemName", formDataJson.itemName);
-      formData.append("itemDescription", formDataJson.itemDescription);
-      formData.append("itemPrice", (formDataJson.itemPrice * 100).toString());
-      formData.append("extras", JSON.stringify(formDataJson.extras || []));
-      formData.append("menuItemActive", formDataJson.menuItemActive.toString());
+    const formData = new FormData();
+    formData.append("itemName", formDataJson.itemName);
+    formData.append("itemDescription", formDataJson.itemDescription);
+    formData.append("itemPrice", (formDataJson.itemPrice * 100).toString());
+    formData.append("extras", JSON.stringify(formDataJson.extras || []));
+    formData.append("menuItemActive", formDataJson.menuItemActive.toString());
 
-      if (formDataJson.menuItemImageFile instanceof File) {
-        formData.append("menuItemImageFile", formDataJson.menuItemImageFile);
-      } else if (formDataJson.menuItemImageUrl) {
-        formData.append("menuItemImageUrl", formDataJson.menuItemImageUrl);
-      }
-
-      console.log("before saving the form data => ", formData);
-      await createMenuItem(formData);
-    } catch (error) {
-      console.error("Error in form submission:", error);
+    if (formDataJson.menuItemImageFile instanceof File) {
+      formData.append("menuItemImageFile", formDataJson.menuItemImageFile);
+    } else if (formDataJson.menuItemImageUrl) {
+      formData.append("menuItemImageUrl", formDataJson.menuItemImageUrl);
     }
+
+    console.log(
+      "Final FormData before submission: ",
+      Array.from(formData.entries())
+    );
+    console.log("here");
+    onSave(formData);
   };
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
-          control={methods.control}
+          control={form.control}
           name="itemName"
           render={({ field }) => (
             <FormItem>
@@ -91,7 +102,7 @@ const MenuItemForm = ({ isLoading }: Props) => {
           )}
         />
         <FormField
-          control={methods.control}
+          control={form.control}
           name="itemDescription"
           render={({ field }) => (
             <FormItem>
@@ -104,7 +115,7 @@ const MenuItemForm = ({ isLoading }: Props) => {
           )}
         />
         <FormField
-          control={methods.control}
+          control={form.control}
           name="itemPrice"
           render={({ field }) => (
             <FormItem>
@@ -118,40 +129,14 @@ const MenuItemForm = ({ isLoading }: Props) => {
         />
 
         <MenuSection />
-        <FormField
-          control={methods.control}
-          name={`menuItemImageFile`}
-          render={({ field }) => (
-            <FormItem className="flex items-center gap-2 w-[30%]">
-              <FormLabel className="whitespace-nowrap">
-                Image (max 5mb) <FormMessage className="pt-1" />
-              </FormLabel>
-              <FormControl>
-                <Input
-                  className="bg-white"
-                  type="file"
-                  accept=".jpg, .jpeg, .png"
-                  onChange={
-                    (e) =>
-                      field.onChange(e.target.files ? e.target.files[0] : null) // Properly set the file
-                  }
-                />
-              </FormControl>
-            </FormItem>
-          )}
+        <ImageSection
+          imageFieldName="menuItemImageFile"
+          description="Add your dish's image that will be visible to your clients."
         />
-        {methods.watch("menuItemImageUrl") && (
-          <div className="h-36 w-48">
-            <img
-              src={methods.watch("menuItemImageUrl")}
-              className="rounded-md object-cover h-full w-full "
-            />
-          </div>
-        )}
-
         {isLoading ? <LoadingBtn /> : <Button type="submit">Submit</Button>}
+        <FormMessage>{form.formState.errors.itemName?.message}</FormMessage>
       </form>
-    </FormProvider>
+    </Form>
   );
 };
 

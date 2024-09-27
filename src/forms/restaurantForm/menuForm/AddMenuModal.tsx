@@ -13,7 +13,8 @@ interface MenuProps {
   isLoading: boolean;
   isOpen: boolean;
   onClose: () => void;
-  menu?: { menuName: string; menuActive: boolean };
+  menu?: Menu;
+  // menu?: { menuName: string; menuActive: boolean };
 }
 
 const AddMenuModal: React.FC<MenuProps> = ({
@@ -38,7 +39,12 @@ const AddMenuModal: React.FC<MenuProps> = ({
         <DialogTitle className="whitespace-nowrap text-xl font-medium tracking-wide">
           {menu ? "Edit Menu" : `Add a New Menu`}
         </DialogTitle>
-        <MenuForm onSave={handleSave} isLoading={isLoading} menu={menu} />
+        <MenuForm
+          onSave={handleSave}
+          isLoading={isLoading}
+          menu={menu}
+          restaurantId={restaurantId}
+        />
         <DialogClose onClick={onClose} />
       </DialogContent>
     </Dialog>

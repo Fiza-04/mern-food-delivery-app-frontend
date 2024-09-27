@@ -37,9 +37,10 @@ type Props = {
   };
   onSave: (MenuFormData: MenuFormData) => void;
   isLoading: boolean;
+  restaurantId: string | undefined;
 };
 
-const MenuForm = ({ onSave, isLoading, menu }: Props) => {
+const MenuForm = ({ onSave, isLoading, menu, restaurantId }: Props) => {
   const menuForm = useForm<MenuFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {

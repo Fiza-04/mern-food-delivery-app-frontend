@@ -141,7 +141,11 @@ const RestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
           <Separator />
           <CuisinesSection />
           <Separator />
-          <ImageSection />
+          <ImageSection
+            imageFieldName="imageFile"
+            description="Add your restaurant's image that will be visible to your clients."
+          />
+
           {isLoading ? <LoadingBtn /> : <Button type="submit">Submit</Button>}
         </form>
       </Form>
