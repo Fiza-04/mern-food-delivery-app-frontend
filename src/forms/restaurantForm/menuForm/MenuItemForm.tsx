@@ -14,20 +14,24 @@ import {
 import { Input } from "../../../components/ui/input";
 import MenuSection from "../MenuSection";
 import ImageSection from "../ImageSection";
+import { useParams } from "react-router-dom";
 
 const menuItemSchema = z
   .object({
     itemName: z.string().min(1, "Item Name is required"),
     itemDescription: z.string().min(1, "Description is required"),
     itemPrice: z.coerce.number({
-      required_error: "Item Price is required",
-      invalid_type_error: "Price must be greater than zero",
+      required_error: "Price is required",
+      invalid_type_error: "Must be a valid number",
     }),
     extras: z
       .array(
         z.object({
           name: z.string().min(1, "Extra name is required"),
-          price: z.number().min(0, "Extra price must be greater than zero"),
+          price: z.coerce.number({
+            required_error: "Price is required",
+            invalid_type_error: "Must be a valid number",
+          }),
         })
       )
       .optional(),
@@ -45,11 +49,10 @@ type MenuItemFormData = z.infer<typeof menuItemSchema>;
 type Props = {
   onSave: (MenuItemFormData: FormData) => void;
   isLoading: boolean;
+  onClose: () => void;
 };
 
-const MenuItemForm = ({ onSave, isLoading }: Props) => {
-  console.log("Initializing MenuItemForm");
-
+const MenuItemForm = ({ onSave, isLoading, onClose }: Props) => {
   const form = useForm<MenuItemFormData>({
     resolver: zodResolver(menuItemSchema),
     defaultValues: {
@@ -59,30 +62,31 @@ const MenuItemForm = ({ onSave, isLoading }: Props) => {
     },
   });
 
-  console.log("Rendering MenuItemForm", form);
+  const menuId = useParams<{ menuId: string }>();
 
   const onSubmit = (formDataJson: MenuItemFormData) => {
-    console.log("Form data being submitted: ", formDataJson);
-
     const formData = new FormData();
     formData.append("itemName", formDataJson.itemName);
     formData.append("itemDescription", formDataJson.itemDescription);
-    formData.append("itemPrice", (formDataJson.itemPrice * 100).toString());
+    formData.append("itemPrice", formDataJson.itemPrice.toString()); // Keep as string to avoid potential issues
     formData.append("extras", JSON.stringify(formDataJson.extras || []));
     formData.append("menuItemActive", formDataJson.menuItemActive.toString());
 
     if (formDataJson.menuItemImageFile instanceof File) {
       formData.append("menuItemImageFile", formDataJson.menuItemImageFile);
+      console.log("image if => ", formDataJson.menuItemImageFile);
+      console.log("image formData => ", formData.entries());
     } else if (formDataJson.menuItemImageUrl) {
       formData.append("menuItemImageUrl", formDataJson.menuItemImageUrl);
+      console.log("image else => ", formDataJson.menuItemImageUrl);
+      console.log("menuItemImageUrl formData => ", formData.entries());
     }
 
-    console.log(
-      "Final FormData before submission: ",
-      Array.from(formData.entries())
-    );
-    console.log("here");
+    console.log("menuItemImageUrl => ", formData);
+    formData.append("menuId", menuId.menuId || "");
+
     onSave(formData);
+    onClose();
   };
 
   return (

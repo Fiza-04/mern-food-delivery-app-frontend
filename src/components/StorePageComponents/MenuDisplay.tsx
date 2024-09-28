@@ -30,7 +30,7 @@ const MenuDisplay = () => {
       <MenuItemModal
         isOpen={isModalOpen}
         onClose={closeModal}
-        // itemIndex={selectedItem}
+        itemIndex={selectedItem}
       />
     </div>
   );

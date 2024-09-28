@@ -11,8 +11,6 @@ const MenuSection = () => {
     name: "extras",
   });
 
-  console.log("Current fields in MenuSection:", fields);
-
   return (
     <div className="space-y-2">
       <FormField

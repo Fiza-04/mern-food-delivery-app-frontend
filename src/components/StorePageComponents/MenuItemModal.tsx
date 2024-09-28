@@ -7,13 +7,13 @@ import { Minus, Plus } from "lucide-react";
 interface MenuItemModalProps {
   isOpen: boolean;
   onClose: () => void;
-  // itemIndex: number;
+  itemIndex: number | null;
 }
 
 const MenuItemModal: React.FC<MenuItemModalProps> = ({
   isOpen,
   onClose,
-  // itemIndex,
+  itemIndex,
 }) => {
   const [click, setClick] = useState(false);
   const [count, setCount] = useState(0);
@@ -34,7 +34,7 @@ const MenuItemModal: React.FC<MenuItemModalProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={onClose} key={itemIndex}>
       <DialogContent
         style={{ maxWidth: "850px", width: "90vw", height: "70vh" }}
         className="flex flex-row space-x-2"

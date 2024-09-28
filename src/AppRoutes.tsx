@@ -59,7 +59,7 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path="/menu-item/*"
+            path="/menu-item/:menuId"
             element={
               <Layout>
                 <ManageMenuItemPage />

@@ -8,7 +8,6 @@ import {
 } from "../../components/ui/form";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
-// import { AspectRatio } from "../../components/ui/aspect-ratio";
 
 type Props = {
   index: number;
@@ -22,7 +21,7 @@ const MenuItemInput = ({ index, removeMenuItem }: Props) => {
     <div className="flex flex-row space-x-4">
       <FormField
         control={control}
-        name={`extras.${index}.itemName`}
+        name={`extras.${index}.name`}
         render={({ field }) => (
           <FormItem className="flex items-center gap-2 w-[30%]">
             <FormLabel>
@@ -42,7 +41,7 @@ const MenuItemInput = ({ index, removeMenuItem }: Props) => {
       <div className="flex flex-row items-end space-x-10 ">
         <FormField
           control={control}
-          name={`extras.${index}.itemPrice`}
+          name={`extras.${index}.price`}
           render={({ field }) => (
             <FormItem className="flex items-center gap-2 w-[50%]">
               <FormLabel className="whitespace-nowrap">
