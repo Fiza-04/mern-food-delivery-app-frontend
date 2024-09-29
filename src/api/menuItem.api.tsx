@@ -43,7 +43,7 @@ export const useCreateMenuItem = (refetch: () => void) => {
     menuItemFormData: FormData
   ): Promise<MenuItem> => {
     const accessToken = await getAccessTokenSilently();
-
+    console.log("menuFormData in api => ", menuItemFormData.entries());
     const response = await fetch(
       `${API_BASE_URL}/api/menu-item/add/${menuId}`,
       {

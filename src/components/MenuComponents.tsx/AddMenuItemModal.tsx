@@ -26,11 +26,7 @@ const AddMenuItemModal: React.FC<MenuItemProps> = ({
             Add New Item
           </DialogTitle>
           <div className="overflow-y-auto scrollbar-hide max-h-[70vh]">
-            <MenuItemForm
-              onSave={onSave}
-              isLoading={isLoading}
-              onClose={onClose}
-            />
+            <MenuItemForm onSave={onSave} isLoading={isLoading} />
           </div>
           <DialogClose onClick={onClose} />
         </DialogContent>

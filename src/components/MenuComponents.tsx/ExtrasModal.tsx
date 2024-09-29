@@ -11,14 +11,13 @@ import {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  index: number | null;
   data: { name: string; price: string }[];
 };
 
-const ExtrasModal = ({ isOpen, onClose, index, data }: Props) => {
+const ExtrasModal = ({ isOpen, onClose, data }: Props) => {
   console.log("data in ExtrasModal => ", data);
   return (
-    <Dialog open={isOpen} onOpenChange={onClose} key={index}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         style={{ maxWidth: "400px", width: "100vw", height: "60vh" }}
       >

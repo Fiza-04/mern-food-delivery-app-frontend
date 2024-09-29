@@ -12,20 +12,30 @@ import {
 import { useState } from "react";
 import ExtrasModal from "./ExtrasModal";
 import { AspectRatio } from "../ui/aspect-ratio";
+import MenuItemModal from "../StorePageComponents/MenuItemModal";
 
 type Props = { data: MenuItem[] };
 
 const DisplayMenuItemTable = ({ data }: Props) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<number | null>(null);
+  const [isExtrasModalOpen, setIsExtrasModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
 
-  const openModal = (index: number) => {
-    setIsModalOpen(true);
-    setSelectedItem(index);
+  const openModal = (item: MenuItem, flag: string) => {
+    if (flag === "extras") {
+      setIsExtrasModalOpen(true);
+    } else if (flag === "view") {
+      setIsViewModalOpen(true);
+      setSelectedItem(item);
+    }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const closeModal = (flag: string) => {
+    if (flag === "extras") {
+      setIsExtrasModalOpen(false);
+    } else if (flag === "view") {
+      setIsViewModalOpen(false);
+    }
     setSelectedItem(null);
   };
 
@@ -50,9 +60,14 @@ const DisplayMenuItemTable = ({ data }: Props) => {
                 <>
                   <TableRow key={index}>
                     <TableCell>{item.itemName}</TableCell>
-                    <TableCell>{item.itemDescription}</TableCell>
+                    <TableCell className="line-clamp-2">
+                      {item.itemDescription}
+                    </TableCell>
                     <TableCell>
-                      <span onClick={() => openModal(index)}>
+                      <span
+                        onClick={() => openModal(item, "extras")}
+                        className="cursor-pointer"
+                      >
                         {item.extras.length}
                       </span>
                     </TableCell>
@@ -72,7 +87,7 @@ const DisplayMenuItemTable = ({ data }: Props) => {
                     <TableCell className="flex flex-row space-x-5">
                       <p
                         className="cursor-pointer"
-                        // onClick={() => handleClick(item._id)}
+                        onClick={() => openModal(item, "view")}
                       >
                         <List size={17} />
                       </p>
@@ -91,10 +106,15 @@ const DisplayMenuItemTable = ({ data }: Props) => {
                     </TableCell>
                   </TableRow>
                   <ExtrasModal
-                    isOpen={isModalOpen}
-                    onClose={closeModal}
-                    index={selectedItem}
+                    isOpen={isExtrasModalOpen}
+                    onClose={() => closeModal("extras")}
                     data={item.extras}
+                  />
+                  <MenuItemModal
+                    isOpen={isViewModalOpen}
+                    onClose={() => closeModal("view")}
+                    data={selectedItem}
+                    flag={0}
                   />
                 </>
               ))

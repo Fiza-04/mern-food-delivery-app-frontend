@@ -49,10 +49,9 @@ type MenuItemFormData = z.infer<typeof menuItemSchema>;
 type Props = {
   onSave: (MenuItemFormData: FormData) => void;
   isLoading: boolean;
-  onClose: () => void;
 };
 
-const MenuItemForm = ({ onSave, isLoading, onClose }: Props) => {
+const MenuItemForm = ({ onSave, isLoading }: Props) => {
   const form = useForm<MenuItemFormData>({
     resolver: zodResolver(menuItemSchema),
     defaultValues: {
@@ -68,25 +67,24 @@ const MenuItemForm = ({ onSave, isLoading, onClose }: Props) => {
     const formData = new FormData();
     formData.append("itemName", formDataJson.itemName);
     formData.append("itemDescription", formDataJson.itemDescription);
-    formData.append("itemPrice", formDataJson.itemPrice.toString()); // Keep as string to avoid potential issues
+    formData.append("itemPrice", formDataJson.itemPrice.toString());
     formData.append("extras", JSON.stringify(formDataJson.extras || []));
     formData.append("menuItemActive", formDataJson.menuItemActive.toString());
 
     if (formDataJson.menuItemImageFile instanceof File) {
       formData.append("menuItemImageFile", formDataJson.menuItemImageFile);
-      console.log("image if => ", formDataJson.menuItemImageFile);
-      console.log("image formData => ", formData.entries());
     } else if (formDataJson.menuItemImageUrl) {
       formData.append("menuItemImageUrl", formDataJson.menuItemImageUrl);
-      console.log("image else => ", formDataJson.menuItemImageUrl);
-      console.log("menuItemImageUrl formData => ", formData.entries());
     }
 
-    console.log("menuItemImageUrl => ", formData);
+    // Log after all fields are appended
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
     formData.append("menuId", menuId.menuId || "");
 
     onSave(formData);
-    onClose();
   };
 
   return (
