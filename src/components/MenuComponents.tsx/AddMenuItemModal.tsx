@@ -1,12 +1,13 @@
 import MenuItemForm from "../../forms/restaurantForm/menuForm/MenuItemForm";
-// import { MenuItem } from "../../types";
+import { MenuItem } from "../../types";
 import { Dialog, DialogClose, DialogContent, DialogTitle } from "../ui/dialog";
 
 interface MenuItemProps {
-  onSave: (menuFormData: FormData) => void;
+  onSave: (menuItemFormData: FormData) => void;
   isLoading: boolean;
   isOpen: boolean;
   onClose: () => void;
+  data?: MenuItem | null;
 }
 
 const AddMenuItemModal: React.FC<MenuItemProps> = ({
@@ -14,6 +15,7 @@ const AddMenuItemModal: React.FC<MenuItemProps> = ({
   isLoading,
   isOpen,
   onClose,
+  data,
 }) => {
   return (
     <div>
@@ -26,7 +28,7 @@ const AddMenuItemModal: React.FC<MenuItemProps> = ({
             Add New Item
           </DialogTitle>
           <div className="overflow-y-auto scrollbar-hide max-h-[70vh]">
-            <MenuItemForm onSave={onSave} isLoading={isLoading} />
+            <MenuItemForm onSave={onSave} isLoading={isLoading} data={data} />
           </div>
           <DialogClose onClick={onClose} />
         </DialogContent>

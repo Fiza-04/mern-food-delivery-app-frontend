@@ -17,9 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../components/ui/select";
-import { Menu } from "../../../types";
-import LoadingBtn from "../../../components/LoadingBtn";
 import { Button } from "../../../components/ui/button";
+import LoadingBtn from "../../../components/LoadingBtn";
 
 const formSchema = z.object({
   menuName: z.string().min(2, {

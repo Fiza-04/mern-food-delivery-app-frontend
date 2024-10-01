@@ -2,13 +2,21 @@ import { Plus } from "lucide-react";
 import { Button } from "../components/ui/button";
 import AddMenuItemModal from "../components/MenuComponents.tsx/AddMenuItemModal";
 import { useState } from "react";
-import { useCreateMenuItem, useGetMenuItems } from "../api/menuItem.api";
+import {
+  useCreateMenuItem,
+  useDeleteMenuItem,
+  useGetMenuItems,
+  useUpdateMenuItem,
+} from "../api/menuItem.api";
 import DisplayMenuItemTable from "../components/MenuComponents.tsx/DisplayMenuItemTable";
 
 const ManageMenuItemPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { menuItems = [], refetch } = useGetMenuItems();
   const { createMenuItem, isLoading } = useCreateMenuItem(refetch);
+  const { updateMenuItem } = useUpdateMenuItem(refetch);
+
+  const { deleteMenuItem } = useDeleteMenuItem(refetch);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -16,6 +24,17 @@ const ManageMenuItemPage = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleDelete = async (menuItemId: string, menuId: string) => {
+    try {
+      if (window.confirm("Are you sure you want to delete this item?")) {
+        await deleteMenuItem({ menuItemId, menuId });
+        refetch();
+      }
+    } catch (error) {
+      console.log("Error Deleting MenuItem: ", error);
+    }
   };
 
   return (
@@ -29,7 +48,12 @@ const ManageMenuItemPage = () => {
           <p>Add Menu Item</p>
         </Button>
       </div>
-      <DisplayMenuItemTable data={menuItems} />
+      <DisplayMenuItemTable
+        data={menuItems}
+        onDelete={handleDelete}
+        onSave={updateMenuItem}
+        isLoading={isLoading}
+      />
       <AddMenuItemModal
         onSave={createMenuItem}
         isLoading={isLoading}

@@ -14,7 +14,7 @@ import { useNavigate } from "react-router-dom";
 type Props = {
   data: Menu[];
   onEdit: (menu: Menu) => void;
-  onDelete: (menuId: Menu) => void;
+  onDelete: (menuId: string) => void;
 };
 
 const DisplayMenuTable = ({ data, onEdit, onDelete }: Props) => {
@@ -40,7 +40,7 @@ const DisplayMenuTable = ({ data, onEdit, onDelete }: Props) => {
           ? data.map((item, index) => (
               <TableRow key={index}>
                 <TableCell>{item.menuName}</TableCell>
-                <TableCell>Amount of items</TableCell>
+                <TableCell>{item.menuItems.length}</TableCell>
                 <TableCell>{item.menuActive ? "Active" : "Inactive"}</TableCell>
                 <TableCell className="flex flex-row space-x-5">
                   <p

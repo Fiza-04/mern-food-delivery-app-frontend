@@ -15,6 +15,8 @@ import { Input } from "../../../components/ui/input";
 import MenuSection from "../MenuSection";
 import ImageSection from "../ImageSection";
 import { useParams } from "react-router-dom";
+import { MenuItem } from "../../../types";
+import { useEffect } from "react";
 
 const menuItemSchema = z
   .object({
@@ -47,11 +49,12 @@ const menuItemSchema = z
 type MenuItemFormData = z.infer<typeof menuItemSchema>;
 
 type Props = {
-  onSave: (MenuItemFormData: FormData) => void;
+  onSave: (formData: FormData, menuItemId?: string) => void;
   isLoading: boolean;
+  data?: MenuItem | null;
 };
 
-const MenuItemForm = ({ onSave, isLoading }: Props) => {
+const MenuItemForm = ({ onSave, isLoading, data }: Props) => {
   const form = useForm<MenuItemFormData>({
     resolver: zodResolver(menuItemSchema),
     defaultValues: {
@@ -77,15 +80,42 @@ const MenuItemForm = ({ onSave, isLoading }: Props) => {
       formData.append("menuItemImageUrl", formDataJson.menuItemImageUrl);
     }
 
-    // Log after all fields are appended
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
+    // for (const [key, value] of formData.entries()) {
+    //   console.log(`${key}:`, value);
+    // }
 
     formData.append("menuId", menuId.menuId || "");
 
-    onSave(formData);
+    if (data?._id) {
+      console.log(data?._id);
+      // If editing an existing item, send the ID
+      formData.append("menuItemId", data._id);
+      // Call the onSave function with the formData and ID
+      onSave(formData, data._id);
+    } else {
+      console.log("here");
+      // If creating a new item, just call onSave with the formData
+      onSave(formData);
+    }
   };
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    const updatedMenuItem = {
+      ...data,
+      itemPrice: parseFloat(data.itemPrice),
+      extras: data.extras?.map((extra) => ({
+        ...extra,
+        price: parseFloat(extra.price),
+      })),
+    };
+    console.log("updatedMenuItem => ", updatedMenuItem);
+
+    form.reset(updatedMenuItem);
+  }, [form, data]);
 
   return (
     <Form {...form}>

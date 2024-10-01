@@ -13,19 +13,41 @@ import { useState } from "react";
 import ExtrasModal from "./ExtrasModal";
 import { AspectRatio } from "../ui/aspect-ratio";
 import MenuItemModal from "../StorePageComponents/MenuItemModal";
+import AddMenuItemModal from "./AddMenuItemModal";
 
-type Props = { data: MenuItem[] };
+type Props = {
+  data: MenuItem[];
+  onDelete: (menuItemId: string, menuId: string) => void;
+  onSave: (menuItemFormData: FormData) => void;
+  isLoading: boolean;
+};
 
-const DisplayMenuItemTable = ({ data }: Props) => {
+type Extras = {
+  name: string;
+  price: number;
+};
+
+const DisplayMenuItemTable = ({ data, onDelete, onSave, isLoading }: Props) => {
   const [isExtrasModalOpen, setIsExtrasModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
+  const [selectedExtras, setSelectedExtras] = useState<Extras[] | null>(null);
 
   const openModal = (item: MenuItem, flag: string) => {
     if (flag === "extras") {
+      const extrasWithNumberPrices = item.extras.map((extra) => ({
+        ...extra,
+        price: Number(extra.price), // Convert price to number
+      }));
+
       setIsExtrasModalOpen(true);
+      setSelectedExtras(extrasWithNumberPrices);
     } else if (flag === "view") {
       setIsViewModalOpen(true);
+      setSelectedItem(item);
+    } else if (flag === "edit") {
+      setIsEditModalOpen(true);
       setSelectedItem(item);
     }
   };
@@ -33,10 +55,14 @@ const DisplayMenuItemTable = ({ data }: Props) => {
   const closeModal = (flag: string) => {
     if (flag === "extras") {
       setIsExtrasModalOpen(false);
+      setSelectedExtras(null);
     } else if (flag === "view") {
       setIsViewModalOpen(false);
+      setSelectedItem(null);
+    } else if (flag === "edit") {
+      setIsEditModalOpen(false);
+      setSelectedItem(null);
     }
-    setSelectedItem(null);
   };
 
   return (
@@ -60,7 +86,7 @@ const DisplayMenuItemTable = ({ data }: Props) => {
                 <>
                   <TableRow key={index}>
                     <TableCell>{item.itemName}</TableCell>
-                    <TableCell className="line-clamp-2">
+                    <TableCell className="line-clamp-2 leading-[1.7rem] mt-2">
                       {item.itemDescription}
                     </TableCell>
                     <TableCell>
@@ -75,8 +101,8 @@ const DisplayMenuItemTable = ({ data }: Props) => {
                     <TableCell>
                       {item.menuItemActive ? "Active" : "Inactive"}
                     </TableCell>
-                    <TableCell>
-                      <AspectRatio ratio={20 / 7}>
+                    <TableCell className="w-72">
+                      <AspectRatio ratio={7 / 2}>
                         <img
                           src={item.menuItemImageFile}
                           className="rounded-md object-cover h-full w-full"
@@ -93,34 +119,41 @@ const DisplayMenuItemTable = ({ data }: Props) => {
                       </p>
                       <p
                         className="cursor-pointer"
-                        // onClick={() => onEdit(item)} // Trigger edit with menu data
+                        onClick={() => openModal(item, "edit")} // Trigger edit with menu data
                       >
                         <Edit size={17} />
                       </p>
                       <p
                         className="cursor-pointer"
-                        // onClick={() => onDelete(item._id)}
+                        onClick={() => onDelete(item._id, item.menuId)}
                       >
                         <Trash size={17} />
                       </p>
                     </TableCell>
                   </TableRow>
-                  <ExtrasModal
-                    isOpen={isExtrasModalOpen}
-                    onClose={() => closeModal("extras")}
-                    data={item.extras}
-                  />
-                  <MenuItemModal
-                    isOpen={isViewModalOpen}
-                    onClose={() => closeModal("view")}
-                    data={selectedItem}
-                    flag={0}
-                  />
                 </>
               ))
             : ""}
         </TableBody>
       </Table>
+      <ExtrasModal
+        isOpen={isExtrasModalOpen}
+        onClose={() => closeModal("extras")}
+        data={selectedExtras || []}
+      />
+      <MenuItemModal
+        isOpen={isViewModalOpen}
+        onClose={() => closeModal("view")}
+        data={selectedItem}
+        flag={0}
+      />
+      <AddMenuItemModal
+        onSave={onSave}
+        isLoading={isLoading}
+        isOpen={isEditModalOpen}
+        onClose={() => closeModal("edit")}
+        data={selectedItem}
+      />
     </>
   );
 };

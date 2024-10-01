@@ -33,6 +33,7 @@ export type Menu = {
   _id: string;
   restaurant: string;
   menuName: string;
+  menuItems: [];
   menuActive: boolean;
 };
 
